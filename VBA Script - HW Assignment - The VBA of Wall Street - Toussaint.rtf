@@ -1,0 +1,146 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 ' VBA HW Assignment - The VBA of Wall Street\
+Sub StockMarketAssignment():\
+\
+  ' ws Statement Will Loop Through All Worksheets\
+    For Each ws In Worksheets\
+\
+    'Turn off screen updating and automatic calculations\
+    Application.Calculation = x1Manual\
+    Application.ScreenUpdating = False\
+\
+    ' Naming Headers\
+    ws.Range("I1").Value = "Ticker"\
+    ws.Range("J1").Value = "Yearly Change"\
+    ws.Range("K1").Value = "Percent Change"\
+    ws.Range("L1").Value = "Total Stock Volume"\
+    ws.Range("O2").Value = "Greatest % Increase"\
+    ws.Range("O3").Value = "Greatest % Decrease"\
+    ws.Range("O4").Value = "Greatest Total Volume"\
+    ws.Range("P1").Value = "Ticker"\
+    ws.Range("Q1").Value = "Value"\
+\
+    ' Setting the data types\
+    Dim TickerName As String\
+    Dim Last_Row As Long\
+    Dim Total_Vol As Double\
+    Dim TickerCounter As Long\
+      Total_Vol = 0\
+      TickerCounter = 2\
+    Dim YearlyOpen As Double\
+    Dim YearlyClose As Double\
+    Dim YearlyChange As Double\
+    Dim PreviousAmount As Long\
+      PreviousAmount = 2\
+    Dim PercentChange As Double\
+    Dim GreatestIncrease As Double\
+      GreatestIncrease = 0\
+    Dim GreatestDecrease As Double\
+      GreatestDecrease = 0\
+    Dim LastRowValue As Long\
+    Dim GreatestTotalVolume As Double\
+      GreatestTotalVolume = 0\
+\
+    ' Locating the Last Row Count\
+    Last_Row = ws.Cells(Rows.Count, 1).End(xlUp).Row\
+    For i = 2 To Last_Row\
+\
+    ' Add To Ticker Total Volume\
+    Total_Vol = Total_Vol + ws.Cells(i, 7).Value\
+            \
+    ' Check to see if we are within the same ticker name\
+    If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then\
+\
+' Easy Challenge\
+\
+  ' Set Ticker Name\
+  TickerName = ws.Cells(i, 1).Value\
+                \
+  ' Print The Ticker Name\
+  ws.Range("I" & TickerCounter).Value = TickerName\
+                \
+  ' Print The Ticker Total Amount\
+  ws.Range("L" & TickerCounter).Value = Total_Vol\
+                \
+  ' Reset Ticker Total\
+      Total_Vol = 0\
+\
+' Moderate Challenge\
+\
+' Set Yearly Open, Yearly Close and Yearly Change Name\
+    YearlyOpen = ws.Range("C" & PreviousAmount)\
+    YearlyClose = ws.Range("F" & i)\
+    YearlyChange = YearlyClose - YearlyOpen\
+    ws.Range("J" & TickerCounter).Value = YearlyChange\
+\
+' Determine Percent Change\
+' If the value is zero, then the cell will default to null - This will prevent dividing by zero\
+\
+  If YearlyOpen = 0 Then\
+  PercentChange = 0\
+    Else\
+      YearlyOpen = ws.Range("C" & PreviousAmount)\
+      PercentChange = YearlyChange / YearlyOpen\
+    End If\
+                \
+  ' Format Double To Include % Symbol And Two Decimal Places\
+  ws.Range("K" & TickerCounter).NumberFormat = "0.00%"\
+  ws.Range("K" & TickerCounter).Value = PercentChange\
+\
+  ' Color the cell green if > 0 or red if < 0\
+  If ws.Range("J" & TickerCounter).Value >= 0 Then\
+  ws.Range("J" & TickerCounter).Interior.ColorIndex = 4\
+    Else\
+      ws.Range("J" & TickerCounter).Interior.ColorIndex = 3\
+    End If\
+\
+  ' Add One To The Summary Table Row\
+    TickerCounter = TickerCounter + 1\
+    PreviousAmount = i + 1\
+      End If\
+    Next i\
+\
+' Hard Challenge\
+\
+' Capturing the Greatest % Increase, % Decrease and Total Volume\
+Last_Row = ws.Cells(Rows.Count, 11).End(xlUp).Row\
+\
+For i = 2 To Last_Row\
+  If ws.Range("K" & i).Value > ws.Range("Q2").Value Then\
+    ws.Range("Q2").Value = ws.Range("K" & i).Value\
+    ws.Range("P2").Value = ws.Range("I" & i).Value\
+  End If\
+\
+  If ws.Range("K" & i).Value < ws.Range("Q3").Value Then\
+    ws.Range("Q3").Value = ws.Range("K" & i).Value\
+    ws.Range("P3").Value = ws.Range("I" & i).Value\
+  End If\
+\
+  If ws.Range("L" & i).Value > ws.Range("Q4").Value Then\
+      ws.Range("Q4").Value = ws.Range("L" & i).Value\
+      ws.Range("P4").Value = ws.Range("I" & i).Value\
+  End If\
+    Next i\
+\
+  ' Adding in Format to Include % Symbol And Two Decimal Places\
+      ws.Range("Q2").NumberFormat = "0.00%"\
+      ws.Range("Q3").NumberFormat = "0.00%"\
+    Next ws\
+    \
+  ' This will autofit the columns\
+  Columns("I:Q").AutoFit\
+    \
+  'Turn off screen updating and automatic calculations\
+  Application.Calculation = x1Automatic\
+  Application.ScreenUpdating = True\
+\
+End Sub\
+\
+\
+}
